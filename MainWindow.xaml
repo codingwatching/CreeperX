@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="CreeperX.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CreeperX"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop Kind="BaseAlt"/>
+    </Window.SystemBackdrop>
+
+    <TabView x:Name="MainTabView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+             AddTabButtonClick="MainTabView_AddNewTab"
+             TabCloseRequested="MainTabView_TabCloseRequested">
+        <TabView.Resources>
+            <ResourceDictionary>
+                <SolidColorBrush x:Key="TabViewItemHeaderBackgroundSelected" Color="{ThemeResource LayerFillColorDefault}"/>
+            </ResourceDictionary>
+        </TabView.Resources>
+
+        <TabView.TabStripFooter>
+            <Rectangle x:Name="DraggableTitleBar" Grid.Column="1"></Rectangle>
+        </TabView.TabStripFooter>
+    </TabView>
+</Window>

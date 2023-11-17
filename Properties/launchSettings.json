@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CreeperX (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "CreeperX (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
