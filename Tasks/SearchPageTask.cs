@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CreeperX.Requests;
-using CreeperX.Profiles;
 using HtmlAgilityPack;
+using CreeperX.Profiles;
+using CreeperX.Utils;
 
 namespace CreeperX.Tasks;
 

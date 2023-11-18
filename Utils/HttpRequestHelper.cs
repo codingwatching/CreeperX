@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace CreeperX.Requests;
+namespace CreeperX.Utils;
 
 public static class HttpRequestHelper
 {
