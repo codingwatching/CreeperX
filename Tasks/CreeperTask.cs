@@ -2,13 +2,19 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using CreeperX.TaskProfiles;
+using CreeperX.Profiles;
 
 namespace CreeperX.Tasks;
 
 public class CreeperTask : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+    // See https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-in-depth
+    private void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
     private string m_title = string.Empty;
     public string Title
@@ -87,12 +93,6 @@ public class CreeperTask : INotifyPropertyChanged
             m_isExpanded = value;
             NotifyPropertyChanged();
         }
-    }
-
-    // See https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-in-depth
-    private void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     public async virtual Task<bool> Run(CreeperProfile profile)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CreeperX.Requests;
-using CreeperX.TaskProfiles;
+using CreeperX.Profiles;
 using HtmlAgilityPack;
 
 namespace CreeperX.Tasks;

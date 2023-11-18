@@ -5,18 +5,19 @@ using System.IO;
 using System.Threading.Tasks;
 using CreeperX.Tasks;
 
-namespace CreeperX.TaskProfiles;
+namespace CreeperX.Profiles;
 
 public abstract class CreeperProfile
 {
     public readonly Dictionary<string, Dictionary<string, bool>> VisitedUris = new();
+    public readonly Dictionary<string, Dictionary<string, object>> EntryItems = new();
 
     public readonly ObservableCollection<CreeperTask> RootTasks;
 
     public event Action<CreeperTask> OnTaskStart = delegate { };
-
     public event Action<CreeperTask> OnTaskEnd = delegate { };
 
+    public string Name { get; set; }
     public readonly DirectoryInfo WorkDirectory;
 
     public CreeperProfile(string workDirectory)
