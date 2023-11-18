@@ -29,7 +29,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Margin="20,10,10,10" Text="Profile Creator" Style="{ThemeResource HeaderTextBlockStyle}"></TextBlock>
+            <TextBlock Margin="20,10,10,10" Text="Profile Creator" Style="{ThemeResource HeaderTextBlockStyle}" />
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -45,7 +45,7 @@
                                 <ListViewItem.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <FontIcon Glyph="&#xE8A4;" Margin="0,0,12,0" />
-                                        <TextBlock Text="{x:Bind ToString()}"></TextBlock>
+                                        <TextBlock Text="{x:Bind ToString()}" />
                                     </StackPanel>
                                 </ListViewItem.Content>
                             </ListViewItem>

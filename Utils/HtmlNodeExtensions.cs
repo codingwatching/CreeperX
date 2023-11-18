@@ -17,8 +17,18 @@ public static class HtmlNodeExtensions
         return node.Attributes["class"].Value.Split(' ').Contains(className);
     }
 
+    public static HtmlNode GetChildLink(this HtmlNode node)
+    {
+        return node.Descendants("a").First();
+    }
+
     public static List<HtmlNode> GetChildrenLinks(this HtmlNode node)
     {
         return node.Descendants("a").ToList();
+    }
+
+    public static List<HtmlNode> GetListItems(this HtmlNode node)
+    {
+        return node.Descendants("li").ToList();
     }
 }

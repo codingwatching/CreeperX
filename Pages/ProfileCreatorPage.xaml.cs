@@ -6,7 +6,6 @@ using System.Linq;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
 using Windows.Storage;
-using CreeperX.Profiles;
 using CreeperX.Utils;
 using System.IO;
 using System.ComponentModel;

@@ -123,4 +123,9 @@ public sealed partial class ProfilePage : Page
             // The system cannot find the file specified...
         }
     }
+
+    private void SaveEntryDataButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        activeProfile.StoreData();
+    }
 }

@@ -14,7 +14,12 @@ public class SearchPageTask : CreeperTask
         get; set;
     }
 
-    public Action<CreeperProfile, SearchPageTask, HtmlNode> SearchRule
+    public Func<CreeperProfile, SearchPageTask, HtmlNode, List<CreeperTask>> SearchSiblingsRule
+    {
+        get; set;
+    }
+
+    public Func<CreeperProfile, SearchPageTask, HtmlNode, List<CreeperTask>> SearchChildrenRule
     {
         get; set;
     }
@@ -35,12 +40,30 @@ public class SearchPageTask : CreeperTask
         var pageResp = await HttpRequestHelper.GetUri(PageUri);
         if (pageResp.IsSuccessStatusCode) // HTTP 200, OK
         {
-            if (SearchRule is not null)
+            // Search siblings
+            if (SearchSiblingsRule is not null)
             {
                 var document = new HtmlDocument();
                 document.LoadHtml(await pageResp.Content.ReadAsStringAsync());
 
-                SearchRule.Invoke(profile, this, document.DocumentNode);
+                var siblings = SearchSiblingsRule.Invoke(profile, this, document.DocumentNode);
+                foreach (var sibling in siblings)
+                {
+                    AddSibling(profile, sibling);
+                }
+            }
+
+            // Search children
+            if (SearchChildrenRule is not null)
+            {
+                var document = new HtmlDocument();
+                document.LoadHtml(await pageResp.Content.ReadAsStringAsync());
+
+                var children = SearchChildrenRule.Invoke(profile, this, document.DocumentNode);
+                foreach (var child in children)
+                {
+                    AddChild(child);
+                }
             }
         }
         else // Failed to get a valid response

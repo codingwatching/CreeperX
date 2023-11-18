@@ -65,13 +65,13 @@ public class CreeperTask : INotifyPropertyChanged
         set => m_children = value;
     }
 
-    public void AddChild(CreeperTask child)
+    protected void AddChild(CreeperTask child)
     {
         child.Parent = this;
         Children.Add(child);
     }
 
-    public void AddSibling(CreeperProfile profile, CreeperTask sibling)
+    protected void AddSibling(CreeperProfile profile, CreeperTask sibling)
     {
         if (Parent != null) // Use own parent
         {

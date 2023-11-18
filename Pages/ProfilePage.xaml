@@ -36,7 +36,7 @@
                         </Grid.RowDefinitions>
                         
                         <TextBlock Text="Creeper X" x:Name="PaneHeader" Margin="12,12,0,0" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                        <TreeView x:Name="TaskTreeView" Grid.Row="1" CanDragItems="False" AllowDrop="False"
+                        <TreeView Grid.Row="1" x:Name="TaskTreeView" CanDragItems="False" AllowDrop="False"
                                   ItemInvoked="TaskTreeView_ItemInvoked"
                                   ItemsSource="{x:Bind rootTasks}" Margin="10">
                             <TreeView.ItemTemplate>
@@ -53,6 +53,11 @@
                                 </DataTemplate>
                             </TreeView.ItemTemplate>
                         </TreeView>
+
+                        <Button Grid.Row="1" x:Name="SaveEntryDataButton" Click="SaveEntryDataButton_Click"
+                                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,10">
+                            <FontIcon Glyph="&#xE74E;" />
+                        </Button>
                     </Grid>
                 </SplitView.Pane>
 
