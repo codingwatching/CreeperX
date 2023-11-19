@@ -10,10 +10,15 @@ namespace CreeperX.Profiles;
 
 public class TingRoomProfile : CreeperProfile
 {
-    private static readonly string INDEX_URI = "http://jp.tingroom.com/rumen/zary/";
+    private const string INDEX_URI = "http://jp.tingroom.com/rumen/zary/";
 
-    private static readonly string PAGES_DICT_NAME = "pages";
-    private static readonly string ARTICLES_DICT_NAME = "articles";
+    private const string PAGES_DICT_NAME = "pages";
+    private const string ARTICLES_DICT_NAME = "articles";
+
+    private static readonly string[] PRESET_NAMES = { INDEXING_PRESET_NAME, ARTICLES_PRESET_NAME };
+
+    private const string INDEXING_PRESET_NAME = "Indexing";
+    private const string ARTICLES_PRESET_NAME = "Articles";
 
     private static readonly Func<CreeperProfile, SearchPageTask, HtmlNode, List<CreeperTask>>
             pageListSearchRule = (profile, task, documentNode) =>
@@ -73,19 +78,35 @@ public class TingRoomProfile : CreeperProfile
         EntryItems.TryAdd(ARTICLES_DICT_NAME, new());
     }
 
-    protected override ObservableCollection<CreeperTask> GetInitialTasks()
+    public override string[] GetPresetNames()
+    {
+        return PRESET_NAMES;
+    }
+
+    protected override ObservableCollection<CreeperTask> GetInitialTasks(string presetName = "")
     {
         var treeData = new ObservableCollection<CreeperTask>();
 
-        var indexTask = new SearchPageTask()
-        {
-            PageUri = INDEX_URI,
-            Title = "[Page] index",
-            SearchSiblingsRule = pageListSearchRule,
-            SearchChildrenRule = articleSearchRule
-        };
+        switch (presetName) {
+            case INDEXING_PRESET_NAME:
+            default:
+                var indexTask = new SearchPageTask()
+                {
+                    PageUri = INDEX_URI,
+                    Title = "[PageList] index",
+                    SearchSiblingsRule = pageListSearchRule,
+                    SearchChildrenRule = articleSearchRule
+                };
 
-        treeData.Add(indexTask);
+                treeData.Add(indexTask);
+
+                CurrentPreset = INDEXING_PRESET_NAME;
+                break;
+            case ARTICLES_PRESET_NAME:
+
+                CurrentPreset = ARTICLES_PRESET_NAME;
+                break;
+        }
 
         return treeData;
     }

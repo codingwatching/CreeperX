@@ -16,10 +16,26 @@
         </Grid.RowDefinitions>
 
         <MenuBar Background="{ThemeResource LayerFillColorDefault}">
+            <MenuBarItem Title="Profile">
+                <MenuFlyoutItem x:Name="ToggleAutoRunItem" Text="{x:Bind AutoRunToggleText, Mode=OneWay}"
+                                Click="ToggleAutoRunItem_Click"></MenuFlyoutItem>
+                <MenuFlyoutItem x:Name="ForceStopItem" Text="Force Stop"
+                                Click="ForceStopItem_Click"></MenuFlyoutItem>
+                <MenuFlyoutItem x:Name="SwitchPresetItem" Text="Switch Preset"
+                                Click="SwitchPresetItem_Click"></MenuFlyoutItem>
+            </MenuBarItem>
+
+            <MenuBarItem Title="Entries">
+                <MenuFlyoutItem x:Name="StoreProfileDataItem" Text="Store"
+                                Click="StoreProfileDataItem_Click"></MenuFlyoutItem>
+            </MenuBarItem>
+
             <MenuBarItem Title="Help">
                 <MenuFlyoutItem Text="About"/>
             </MenuBarItem>
         </MenuBar>
+
+        <TextBlock Margin="0,10,20,0" Text="{x:Bind ActiveProfile.Status, Mode=OneWay}" HorizontalAlignment="Right"/>
 
         <Grid Grid.Row="1" Background="{ThemeResource LayerOnMicaBaseAltFillColorDefault}"
               BorderBrush="{ThemeResource AccentControlElevationBorderBrush}" BorderThickness="0,1,0,0">
@@ -34,8 +50,10 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        
-                        <TextBlock Text="Creeper X" x:Name="PaneHeader" Margin="12,12,0,0" Style="{StaticResource SubtitleTextBlockStyle}"/>
+
+                        <TextBlock Text="Creeper X" x:Name="PaneHeader" Margin="10,10,0,0"
+                                    Style="{StaticResource SubtitleTextBlockStyle}"/>
+
                         <TreeView Grid.Row="1" x:Name="TaskTreeView" CanDragItems="False" AllowDrop="False"
                                   ItemInvoked="TaskTreeView_ItemInvoked"
                                   ItemsSource="{x:Bind rootTasks}" Margin="10">
@@ -45,7 +63,7 @@
                                         <TreeViewItem.Content>
                                             <StackPanel Orientation="Horizontal">
                                                 <FontIcon Glyph="{x:Bind crxt:CreeperTask.GetGlyphForStatus(Status), Mode=OneWay}"
-                                                          Margin="0,0,12,0" />
+                                                          Margin="0,0,10,0" />
                                                 <TextBlock Text="{x:Bind Title, Mode=OneWay}"></TextBlock>
                                             </StackPanel>
                                         </TreeViewItem.Content>
@@ -53,11 +71,6 @@
                                 </DataTemplate>
                             </TreeView.ItemTemplate>
                         </TreeView>
-
-                        <Button Grid.Row="1" x:Name="SaveEntryDataButton" Click="SaveEntryDataButton_Click"
-                                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,10,10,10">
-                            <FontIcon Glyph="&#xE74E;" />
-                        </Button>
                     </Grid>
                 </SplitView.Pane>
 
@@ -75,8 +88,8 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <ListView x:Name="FinishedTaskList" Grid.Column="0" ItemsSource="{x:Bind finishedTasks}"
-                                  Margin="12,12,12,12" CanDragItems="False" AllowDrop="False"
+                        <ListView x:Name="FinishedTaskList" Grid.Column="0" ItemsSource="{x:Bind ActiveProfile.FinishedTasks}"
+                                  Margin="20,20,10,10" CanDragItems="False" AllowDrop="False"
                                   SelectionChanged="FinishedTaskList_SelectionChanged">
                             <ListView.Header>
                                 <StackPanel Orientation="Horizontal">
@@ -99,8 +112,8 @@
                             </ListView.ItemTemplate>
                         </ListView>
 
-                        <ListView x:Name="RunningTaskList" Grid.Column="1" ItemsSource="{x:Bind runningTasks}"
-                                  Margin="12,12,12,12" CanDragItems="False" AllowDrop="False"
+                        <ListView x:Name="RunningTaskList" Grid.Column="1" ItemsSource="{x:Bind ActiveProfile.RunningTasks}"
+                                  Margin="20,20,10,10" CanDragItems="False" AllowDrop="False"
                                   SelectionChanged="RunningTaskList_SelectionChanged">
                             <ListView.Header>
                                 <StackPanel Orientation="Horizontal">
@@ -132,12 +145,12 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <StackPanel Orientation="Horizontal" Margin="12,0,12,0">
+                        <StackPanel Orientation="Horizontal" Margin="20,20,12,0">
                             <FontIcon Glyph="&#xE946;" Margin="0,0,12,0" />
                             <TextBlock Text="Selected task:" Style="{ThemeResource BodyTextBlockStyle}"></TextBlock>
                         </StackPanel>
 
-                        <ContentControl x:Name="SelectedTaskView" Grid.Row="1" Margin="20,20,12,12">
+                        <ContentControl x:Name="SelectedTaskView" Grid.Row="1" Margin="30,20,12,12">
                             <ContentControl.ContentTemplate>
                                 <DataTemplate x:DataType="crxt:CreeperTask">
                                     <Grid>
@@ -158,18 +171,25 @@
                             </ContentControl.ContentTemplate>
                         </ContentControl>
 
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <TextBlock Margin="10,18,0,0" Text="{x:Bind ActiveProfile.TypeName, Mode=OneWay}"
+                                           Style="{ThemeResource BaseTextBlockStyle}"></TextBlock>
+                            <TextBlock Margin="10,18,0,0" Text="{x:Bind ActiveProfile.CurrentPreset, Mode=OneWay}"
+                                           Style="{ThemeResource BodyTextBlockStyle}"></TextBlock>
+                        </StackPanel>
+
                         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <TextBlock Margin="12,18,30,0" Text="Work Directory:"
+                            <TextBlock Margin="0,18,30,0" Text="Work Directory:"
                                            Style="{ThemeResource BodyTextBlockStyle}"></TextBlock>
-                            <TextBlock Margin="0,18,10,0" Text="{x:Bind activeProfile.WorkDirectory}"
+                            <TextBlock Margin="0,18,10,0" Text="{x:Bind ActiveProfile.WorkDirectory, Mode=OneWay}"
                                            Style="{ThemeResource BodyTextBlockStyle}"></TextBlock>
-                            
+
                             <Button Margin="8,12,0,12" x:Name="CopyWorkDirButton"
-                                    Click="CopyWorkDirButton_Click" ToolTipService.ToolTip="Copy directory">
+                                        Click="CopyWorkDirButton_Click" ToolTipService.ToolTip="Copy directory">
                                 <FontIcon FontSize="18" Glyph="&#xE8C8;" />
                             </Button>
                             <Button Margin="8,12,10,12" x:Name="OpenWorkDirButton"
-                                    Click="OpenWorkDirButton_Click" ToolTipService.ToolTip="Open directory">
+                                        Click="OpenWorkDirButton_Click" ToolTipService.ToolTip="Open directory">
                                 <FontIcon FontSize="18" Glyph="&#xE838;" />
                             </Button>
                         </StackPanel>

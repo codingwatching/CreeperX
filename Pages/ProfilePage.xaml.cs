@@ -7,6 +7,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Xaml.Navigation;
 using CreeperX.Tasks;
 using CreeperX.Profiles;
+using System.Runtime.CompilerServices;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -16,43 +17,58 @@ namespace CreeperX;
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class ProfilePage : Page
+public sealed partial class ProfilePage : Page, INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
+    // See https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-in-depth
+    private void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     private ObservableCollection<CreeperTask> rootTasks;
 
-    private readonly ObservableCollection<CreeperTask> runningTasks;
-    private readonly ObservableCollection<CreeperTask> finishedTasks;
+    public bool AutoRun
+    {
+        get => ActiveProfile?.AutoRunRootTasks ?? false;
+        set
+        {
+            if (ActiveProfile is not null)
+            {
+                ActiveProfile.AutoRunRootTasks = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(AutoRunToggleText));
+            }
+        }
+    }
 
-    private CreeperProfile activeProfile;
+    public string AutoRunToggleText
+    {
+        get => AutoRun ? "Disable AutoRun" : "Enable AutoRun";
+    }
+
+    private CreeperProfile m_activeProfile;
+    public CreeperProfile ActiveProfile
+    {
+        get => m_activeProfile;
+        private set
+        {
+            m_activeProfile = value;
+            NotifyPropertyChanged();
+        }
+    }
 
     public ProfilePage()
     {
         this.InitializeComponent();
-
-        runningTasks = new ObservableCollection<CreeperTask>();
-        finishedTasks = new ObservableCollection<CreeperTask>();
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
-        activeProfile = e.Parameter as CreeperProfile;
+        ActiveProfile = e.Parameter as CreeperProfile;
 
-        activeProfile.OnTaskStart += (task) => runningTasks.Add(task);
-        activeProfile.OnTaskEnd += (task) =>
-        {
-            runningTasks.Remove(task);
-
-            if (finishedTasks.Contains(task)) // Previous running of the same task (unsuccessful), remove it
-            {
-                finishedTasks.Remove(task);
-            }
-
-            finishedTasks.Add(task);
-        };
-
-        rootTasks = activeProfile.RootTasks;
+        rootTasks = ActiveProfile.RootTasks;
     }
 
     private void SetSelectedItem(CreeperTask task)
@@ -62,16 +78,13 @@ public sealed partial class ProfilePage : Page
         SelectedTaskView.Content = task;
     }
 
-    private async void TaskTreeView_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
+    private void TaskTreeView_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
     {
         var task = args.InvokedItem as CreeperTask;
 
         if (task is not null)
         {
             SelectedTaskView.Content = task;
-
-            // Try running the selected task
-            await activeProfile.RunTask(task);
         }
     }
 
@@ -108,7 +121,7 @@ public sealed partial class ProfilePage : Page
     private void CopyWorkDirButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
         var package = new DataPackage();
-        package.SetText(activeProfile.WorkDirectory.FullName);
+        package.SetText(m_activeProfile.WorkDirectory.FullName);
         Clipboard.SetContent(package);
     }
 
@@ -116,7 +129,7 @@ public sealed partial class ProfilePage : Page
     {
         try
         {
-            Process.Start("explorer.exe", activeProfile.WorkDirectory.FullName);
+            Process.Start("explorer.exe", m_activeProfile.WorkDirectory.FullName);
         }
         catch (Win32Exception)
         {
@@ -124,8 +137,23 @@ public sealed partial class ProfilePage : Page
         }
     }
 
-    private void SaveEntryDataButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    private void StoreProfileDataItem_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
     {
-        activeProfile.StoreData();
+        m_activeProfile.StoreData();
+    }
+
+    private void ToggleAutoRunItem_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        AutoRun = !AutoRun;
+    }
+
+    private void ForceStopItem_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+
+    }
+
+    private void SwitchPresetItem_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+
     }
 }
